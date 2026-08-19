@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Tazkarti.Api/Tazkarti.Api.csproj" />
+    <Project Path="src/Tazkarti.Application/Tazkarti.Application.csproj" />
+    <Project Path="src/Tazkarti.Domain/Tazkarti.Domain.csproj" />
+    <Project Path="src/Tazkarti.Infrastructure/Tazkarti.Infrastructure.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,47 @@
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Tazkarti.Domain.Interfaces;
+using Tazkarti.Infrastructure.Data;
+
+namespace Tazkarti.Infrastructure.Repositories;
+
+public class GenericRepository<T> : IGenericRepository<T> where T : class
+{
+    protected readonly TazkartiDbContext _context;
+
+    public GenericRepository(TazkartiDbContext context)
+    {
+        _context = context;
+    }
+
+    public virtual async Task<T?> GetByIdAsync(object id)
+    {
+        return await _context.Set<T>().FindAsync(id);
+    }
+
+    public virtual async Task<IReadOnlyList<T>> GetAllAsync()
+    {
+        return await _context.Set<T>().ToListAsync();
+    }
+
+    public virtual async Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().Where(predicate).ToListAsync();
+    }
+
+    public virtual async Task<T> AddAsync(T entity)
+    {
+        await _context.Set<T>().AddAsync(entity);
+        return entity;
+    }
+
+    public virtual void Update(T entity)
+    {
+        _context.Set<T>().Update(entity);
+    }
+
+    public virtual void Delete(T entity)
+    {
+        _context.Set<T>().Remove(entity);
+    }
+}
