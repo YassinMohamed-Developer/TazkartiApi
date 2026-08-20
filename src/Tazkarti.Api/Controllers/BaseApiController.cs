@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Tazkarti.Api.Controllers;
 
+[Route("api/[controller]/[action]")]
 [ApiController]
-[Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
 }

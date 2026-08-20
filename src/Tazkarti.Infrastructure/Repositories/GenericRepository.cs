@@ -29,6 +29,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _context.Set<T>().Where(predicate).ToListAsync();
     }
 
+    public virtual async Task<T?> FindByIdAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _context.Set<T>().Where(predicate).FirstOrDefaultAsync();
+    }
+
     public virtual async Task<T> AddAsync(T entity)
     {
         await _context.Set<T>().AddAsync(entity);

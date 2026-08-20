@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="Shared/Shared.csproj" Id="0e32b9bd-62ee-4922-b14b-5a5a79107f48" />
     <Project Path="src/Tazkarti.Api/Tazkarti.Api.csproj" />
     <Project Path="src/Tazkarti.Application/Tazkarti.Application.csproj" />
     <Project Path="src/Tazkarti.Domain/Tazkarti.Domain.csproj" />

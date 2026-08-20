@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
+using Tazkarti.Api.MiddleWare;
 using Tazkarti.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,7 +46,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
 }
-
+//app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");

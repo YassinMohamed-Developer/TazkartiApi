@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tazkarti.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Tazkarti.Infrastructure.Data;
 namespace Tazkarti.Infrastructure.Migrations
 {
     [DbContext(typeof(TazkartiDbContext))]
-    partial class TazkartiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819154004_updateGovernoratetobeEnum")]
+    partial class updateGovernoratetobeEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
