@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Shared.Helper;
 using Tazkarti.Application.Dtos.RequestDto;
 using Tazkarti.Application.Dtos.ResponseDto;
+using Tazkarti.Application.Features.Auth.Command;
 using Tazkarti.Application.Interfaces;
 
 namespace Tazkarti.Api.Controllers
@@ -12,17 +14,18 @@ namespace Tazkarti.Api.Controllers
 	[ApiController]
 	public class AuthController : ControllerBase
 	{
-		private readonly IAuthService _authService;
+		private readonly IMediator _mediator;
 
-		public AuthController(IAuthService authService)
+		public AuthController(IMediator mediator)
 		{
-			_authService = authService;
+			_mediator = mediator;
 		}
 
 		[HttpPost]
 		public async Task<ActionResult<BaseResult<TokenDto>>> SignIn(LoginDto loginDto)
 		{
-			var result = await _authService.LoginAsync(loginDto);
+
+			var result = await _mediator.Send(new LoginCommand(loginDto));
 
 			if (!result.IsSuccess)
 			{
@@ -36,7 +39,7 @@ namespace Tazkarti.Api.Controllers
 
 		public async Task<ActionResult<BaseResult<string>>> Register(RegisterDto registerDto)
 		{
-			var result = await _authService.RegisterAsync(registerDto);
+			var result = await _mediator.Send(new RegisterCommand(registerDto));
 
 			if (!result.IsSuccess)
 			{

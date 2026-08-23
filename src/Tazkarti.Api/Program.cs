@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using Tazkarti.Api.MiddleWare;
+using Tazkarti.Application.Features.Auth.Command;
 using Tazkarti.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,9 +35,11 @@ builder.Services.AddCors(options =>
     });
 });
 
-    var app = builder.Build();
+builder.Services.AddMediatR(services => services.RegisterServicesFromAssemblies(typeof(LoginCommandHandler).Assembly));
 
-// Configure the HTTP request pipeline.
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.;
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
