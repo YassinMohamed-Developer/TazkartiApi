@@ -46,5 +46,10 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(u => u.LoyaltyTier)
             .HasConversion<string>()
             .HasMaxLength(20);
+
+        builder.HasOne(u => u.FavouriteClub)
+            .WithMany(c => c.Fans)
+            .HasForeignKey(u => u.FavouriteClubId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,11 +1,11 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Shared.Helper;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Shared.Helper;
 using Tazkarti.Application.Dtos.RequestDto;
 using Tazkarti.Application.Interfaces;
 using Tazkarti.Domain.Entities;
@@ -18,7 +18,9 @@ namespace Tazkarti.Application.Features.Auth.Command
 		private readonly ILogger<LoginCommandHandler> _logger;
 		private readonly SignInManager<AppUser> _signInManager;
 		private readonly UserManager<AppUser> _userManager;
-		public RegisterCommandHandler(ILogger<LoginCommandHandler> logger, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager)
+		public RegisterCommandHandler(ILogger<LoginCommandHandler> logger, 
+			SignInManager<AppUser> signInManager, 
+			UserManager<AppUser> userManager)
 		{
 			_logger = logger;
 			_signInManager = signInManager;
@@ -73,6 +75,7 @@ namespace Tazkarti.Application.Features.Auth.Command
 				PhoneNumber = request.RegisterDto.PhoneNumber,
 				Id = request.RegisterDto.NationalId,
 				FanId = GenerateFanId(),
+				FavouriteClubId = request.RegisterDto.FavouriteClubId
 			};
 
 			var creationgUser = await _userManager.CreateAsync(User, request.RegisterDto.Password);

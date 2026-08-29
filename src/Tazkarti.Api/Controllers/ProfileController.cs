@@ -1,35 +1,38 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Helper;
 using Tazkarti.Application.Dtos.ResponseDto;
-using Tazkarti.Application.Interfaces;
+using Tazkarti.Application.Features.Profile.Query;
 
-namespace Tazkarti.Api.Controllers
+namespace Tazkarti.Api.Controllers;
+
+public class ProfileController : BaseApiController
 {
-	public class ProfileController : BaseApiController
-	{
-		private readonly IProfileService _profileService;
+    private readonly IMediator _mediator;
 
-		public ProfileController(IProfileService profileService)
-		{
-			_profileService = profileService;	
-		}
+    public ProfileController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
 
-		[Authorize]
-		[HttpGet()]
-		public async Task<ActionResult<BaseResult<ProfileDto>>> GetProfile()
-		{
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<BaseResult<ProfileDto>>> GetProfile()
+    {
+        var userId = User.FindFirst("UserId")?.Value;
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
 
-			var userid = User.FindFirst("UserId").Value;
+        var result = await _mediator.Send(new GetProfileQuery(userId));
 
-			var result = await _profileService.GetProfileAsync(userid);
+        if (!result.IsSuccess)
+        {
+            return StatusCode(result.StatusCode, result);
+        }
 
-			if (!result.IsSuccess)
-			{
-				return BadRequest(result);
-			}
-			return Ok(result);
-		}
-	}
+        return Ok(result);
+    }
 }

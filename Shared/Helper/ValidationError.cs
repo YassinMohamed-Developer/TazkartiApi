@@ -52,6 +52,7 @@ namespace Shared.Helper
 
 			public const string LoginSucceeded =
 				"Login successful.";
+			public static readonly string ClubAlreadyExists = "This club already exists.";
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Tazkarti.Domain.Enums;
@@ -19,5 +19,6 @@ namespace Tazkarti.Application.Dtos.ResponseDto
 		public string? AvatarUrl { get; set; }
 		public LoyaltyTier LoyaltyTier { get; set; }
 		public int AttendancePoints { get; set; }
+		public string? FavouriteClubName { get; set; }
 	}
 }

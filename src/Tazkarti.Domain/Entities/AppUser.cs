@@ -16,6 +16,10 @@ public class AppUser : IdentityUser<string>
     public int AttendancePoints { get; set; } = 0;
     public bool IsVerified { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public int FavouriteClubId { get; set; }
+    public Club FavouriteClub { get; set; } = null!;
+
 	public ICollection<BookingOrder> Bookings { get; set; } = new List<BookingOrder>();
     public ICollection<AttendanceHistory> AttendanceHistories { get; set; } = new List<AttendanceHistory>();
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
