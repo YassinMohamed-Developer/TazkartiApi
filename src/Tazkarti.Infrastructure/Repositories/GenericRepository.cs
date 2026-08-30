@@ -19,9 +19,19 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public virtual async Task<IReadOnlyList<T>> GetAllAsync()
+    public virtual async Task<IReadOnlyList<T>> GetAllAsync(string? include = null)
     {
-        return await _context.Set<T>().ToListAsync();
+        IQueryable<T> query = _context.Set<T>();
+
+        if (!string.IsNullOrEmpty(include))
+        {
+            foreach (var includeProp in include.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProp);
+            }
+        }
+
+        return await query.ToListAsync();
     }
 
     public virtual async Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate)
