@@ -25,7 +25,7 @@ public class GetProfileQueryHandler : IRequestHandler<GetProfileQuery, BaseResul
     public async Task<BaseResult<ProfileDto>> Handle(GetProfileQuery request, CancellationToken cancellationToken)
     {
         var user = await _unitOfWork.Repository<AppUser>().FindByIdAsync(x => x.Id == request.UserId
-        ,include: "FavouriteClub");
+        , include: "FavouriteClub");
 
         if (user is null)
         {
