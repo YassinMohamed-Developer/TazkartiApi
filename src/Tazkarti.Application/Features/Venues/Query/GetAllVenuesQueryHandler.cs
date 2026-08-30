@@ -1,11 +1,11 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using Shared.Helper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Shared.Helper;
 using Tazkarti.Application.Dtos.ResponseDto;
 using Tazkarti.Application.Interfaces;
 using Tazkarti.Domain.Entities;
@@ -28,7 +28,7 @@ namespace Tazkarti.Application.Features.Venues.Query
 		{
 			var Stadiums = await _unitOfWork.Repository<StadiumVenue>().GetAllAsync(include: "Gates");
 
-			if(Stadiums == null)
+			if (Stadiums == null)
 			{
 				_logger.LogError("No Stadiums found in the database.");
 				return new BaseResult<IReadOnlyList<VenuesDto>>()
@@ -45,7 +45,7 @@ namespace Tazkarti.Application.Features.Venues.Query
 				Capacity = x.Capacity,
 				City = x.City,
 				Description = x.Description,
-				//ImageUrl = x.ImageUrl,
+				ImageUrl = x.ImageUrl,
 				Location = x.Location,
 				MetroAccess = x.MetroAccess,
 				GateName = x.Gates.Select(x => x.GateName).ToList(),

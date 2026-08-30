@@ -19,7 +19,7 @@ public class FootballMatch
     public int AvailabilityPercent { get; set; } = 100;
     public decimal MinPrice { get; set; }
     public string? BannerImage { get; set; }
-    public bool IsActive { get; set; } = true;
+    public bool? IsActive { get; set; } = true;
 
     public Club HomeTeam { get; set; } = null!;
     public Club AwayTeam { get; set; } = null!;
