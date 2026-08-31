@@ -12,7 +12,7 @@ public class BookingOrder
     public int? EventId { get; set; }
     public int? CategoryId { get; set; }
     public int? TierId { get; set; }
-    public string Venue { get; set; } = string.Empty;
+    public int VenueId { get; set; }
     public string City { get; set; } = string.Empty;
     public string? Gate { get; set; }
     public string? Block { get; set; }

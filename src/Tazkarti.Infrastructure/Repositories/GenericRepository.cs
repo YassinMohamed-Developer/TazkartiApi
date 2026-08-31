@@ -70,4 +70,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         _context.Set<T>().Remove(entity);
     }
+
+    public async Task<IReadOnlyList<T>> GetAllWithIdAsync(Expression<Func<T, bool>> predicate,string? include = null)
+    {
+
+        IQueryable<T> query = _context.Set<T>();
+
+		if (!string.IsNullOrEmpty(include))
+		{
+			foreach (var includeProp in include.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				query = query.Include(includeProp);
+			}
+		}
+
+		return await _context.Set<T>().Where(predicate).ToListAsync();
+    }
 }

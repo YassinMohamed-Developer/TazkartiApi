@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Auth\Query\" />
+    <Folder Include="Features\Booking\Query\" />
   </ItemGroup>
 
   <ItemGroup>

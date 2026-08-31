@@ -25,8 +25,7 @@ public class BookingOrderConfiguration : IEntityTypeConfiguration<BookingOrder>
             .HasConversion<string>()
             .HasMaxLength(20);
 
-        builder.Property(b => b.Venue)
-            .HasMaxLength(150)
+        builder.Property(b => b.VenueId)
             .IsRequired();
 
         builder.Property(b => b.City)
