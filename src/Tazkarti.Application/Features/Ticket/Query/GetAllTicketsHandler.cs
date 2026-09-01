@@ -23,7 +23,7 @@ namespace Tazkarti.Application.Features.Ticket.Query
 		public async Task<BaseResult<IReadOnlyList<TicketDto>>> Handle(GetAllTicketQuery request, CancellationToken cancellationToken)
 		{
 			var Tickets = await _unitOfWork.Repository<TicketPass>()
-				.GetAllWithIdAsync(x => x.BookingOrder.UserId == request.UserId);
+				.GetAllWithIdAsync(x => x.BookingOrder.UserId == request.UserId,include:"BookingOrder");
 			if (Tickets == null)
 			{
 				return new BaseResult<IReadOnlyList<TicketDto>>
@@ -41,6 +41,13 @@ namespace Tazkarti.Application.Features.Ticket.Query
 				Gate = x.Gate,
 				HolderName = x.HolderName,
 				Price = x.Price,
+				AwayTeam = x.AwayTeam,
+				Competition = x.Competition,
+				HomeTeam = x.HomeTeam,
+				Round = x.Round,
+				Title = x.Title,
+				Status = x.Status,
+				IsActive = x.IsActive,
 			}).ToList();
 
 			return new BaseResult<IReadOnlyList<TicketDto>>

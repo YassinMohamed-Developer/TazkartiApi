@@ -7,6 +7,7 @@ using System.Text;
 using Tazkarti.Application.Dtos.RequestDto;
 using Tazkarti.Application.Interfaces;
 using Tazkarti.Domain.Entities;
+using Tazkarti.Domain.Enums;
 
 namespace Tazkarti.Application.Features.Ticket.Query
 {
@@ -31,6 +32,7 @@ namespace Tazkarti.Application.Features.Ticket.Query
 					StatusCode = (int)HttpStatusCode.NotFound,
 				};
 			}
+
 			var ticketDto = new TicketDto
 			{
 				BookingOrderId = ticketPass.BookingOrderId,
@@ -39,6 +41,12 @@ namespace Tazkarti.Application.Features.Ticket.Query
 				HolderName = ticketPass.HolderName,
 				Status = ticketPass.Status,
 				Price = ticketPass.Price,
+				Competition = ticketPass.Competition,
+				Round = ticketPass.Round,
+				AwayTeam = ticketPass.AwayTeam,
+				HomeTeam = ticketPass.HomeTeam,
+				Title = ticketPass.Title,
+				IsActive = ticketPass.IsActive
 			};
 			return new BaseResult<TicketDto>
 			{

@@ -10,10 +10,16 @@ namespace Tazkarti.Application.Dtos.RequestDto
 		public int BookingOrderId { get; set; }
 		public string CurrentFanId { get; set; } = string.Empty;
 		public string HolderName { get; set; } = string.Empty;
-		public string? Row { get; set; }
-		public string? SeatNumber { get; set; }
 		public decimal Price { get; set; }
 		public string? Gate { get; set; }
 		public TicketStatus Status { get; set; } = TicketStatus.Confirmed;
+
+		public string? Competition { get; set; }
+		public string? Round { get; set; }
+		public string? Title { get; set; }
+		public string? HomeTeam { get; set; }
+		public string? AwayTeam { get; set; }
+
+		public bool? IsActive { get; set; }
 	}
 }

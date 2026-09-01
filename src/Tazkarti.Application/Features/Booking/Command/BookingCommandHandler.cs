@@ -161,8 +161,27 @@ namespace Tazkarti.Application.Features.Booking.Command
 			await _unitOfWork.Repository<BookingOrder>().AddAsync(bookingOrder);
 			bookingOrder.Status = BookingStatus.Confirmed;
 
-			var userid = await _unitOfWork.Repository<AppUser>().FindByIdAsync(x => x.Id == request.userId);
-			if(userid == null)
+			var userid = await _unitOfWork.Repository<AppUser>()
+				.FindAndProjectAsync(x => x.Id == request.userId,x => new
+				{
+					x.FanId,
+					x.FullName
+				});
+
+			var match = await _unitOfWork.Repository<FootballMatch>()
+					.FindAndProjectAsync(
+						x => x.Id == request.BookingDto.MatchId,
+						x => new
+						{
+							x.Title,
+							x.Competition,
+							x.Round,
+							x.IsActive,
+							HomeTeamName = x.HomeTeam.Name,
+							AwayTeamName = x.AwayTeam.Name
+						});
+
+			if (userid == null)
 			{
 				return new BaseResult<string>
 				{
@@ -183,6 +202,12 @@ namespace Tazkarti.Application.Features.Booking.Command
 					Price = bookingOrder.TotalAmount,
 					Gate = bookingOrder.Gate,
 					Status = TicketStatus.Confirmed,
+					Competition = match?.Competition,
+					HomeTeam = match?.HomeTeamName,
+					AwayTeam = match?.AwayTeamName,
+					Title = match != null ? $"{match.HomeTeamName} vs {match.AwayTeamName}" : null,
+					Round = match?.Round,
+					IsActive = match?.IsActive,
 				};
 
 				bookingOrder.Tickets.Add(ticketpass);

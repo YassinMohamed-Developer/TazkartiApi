@@ -55,6 +55,16 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 		return await query.Where(predicate).FirstOrDefaultAsync();
     }
 
+    public virtual async Task<TResult?> FindAndProjectAsync<TResult>(
+        Expression<Func<T, bool>> predicate,
+        Expression<Func<T, TResult>> selector)
+    {
+        return await _context.Set<T>()
+            .Where(predicate)
+            .Select(selector)
+            .FirstOrDefaultAsync();
+    }
+
     public virtual async Task<T> AddAsync(T entity)
     {
         await _context.Set<T>().AddAsync(entity);
@@ -86,4 +96,15 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
 		return await _context.Set<T>().Where(predicate).ToListAsync();
     }
+
+	public void Attache(T entity)
+	{
+		_context.Set<T>().Attach(entity);
+	}
+
+	public void UpdateProperty<TProperty>(T entity, Expression<Func<T, TProperty>> propertyExpression)
+	{
+         _context.Set<T>().Attach(entity);
+        _context.Entry(entity).Property(propertyExpression).IsModified = true;
+	}
 }

@@ -22,12 +22,6 @@ public class TicketPassConfiguration : IEntityTypeConfiguration<TicketPass>
             .HasMaxLength(150)
             .IsRequired();
 
-        builder.Property(t => t.Row)
-            .HasMaxLength(20);
-
-        builder.Property(t => t.SeatNumber)
-            .HasMaxLength(20);
-
         builder.Property(t => t.Price)
             .HasColumnType("decimal(18,2)");
 
@@ -37,6 +31,21 @@ public class TicketPassConfiguration : IEntityTypeConfiguration<TicketPass>
         builder.Property(t => t.Status)
             .HasConversion<string>()
             .HasMaxLength(30);
+
+        builder.Property(t => t.Competition)
+            .HasMaxLength(150);
+
+        builder.Property(t => t.Round)
+            .HasMaxLength(50);
+
+        builder.Property(t => t.Title)
+            .HasMaxLength(200);
+
+        builder.Property(t => t.HomeTeam)
+            .HasMaxLength(150);
+
+        builder.Property(t => t.AwayTeam)
+            .HasMaxLength(150);
 
         builder.HasOne(t => t.BookingOrder)
             .WithMany(b => b.Tickets)

@@ -1,10 +1,10 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using Shared.Helper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Shared.Helper;
 using Tazkarti.Application.Dtos.ResponseDto;
 using Tazkarti.Application.Interfaces;
 using Tazkarti.Domain.Entities;
@@ -17,7 +17,7 @@ namespace Tazkarti.Application.Features.Matches.Query
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ILogger<GetAllMatchesHandler> _logger;
 
-		public GetAllMatchesHandler(IUnitOfWork unitOfWork,ILogger<GetAllMatchesHandler> logger)
+		public GetAllMatchesHandler(IUnitOfWork unitOfWork, ILogger<GetAllMatchesHandler> logger)
 		{
 			_unitOfWork = unitOfWork;
 			_logger = logger;
@@ -55,7 +55,7 @@ namespace Tazkarti.Application.Features.Matches.Query
 				VenueName = m.Venue.Name,
 				NameOfCategoryMatch = m.TicketCategories.Select(x => x.Name).ToList(),
 				Available = m.TicketCategories.Select(a => a.Available).ToList(),
-				Price = m.TicketCategories.Select(p =>  p.Price).ToList(),
+				Price = m.TicketCategories.Select(p => p.Price).ToList(),
 				GateAllocation = m.TicketCategories.Select(G => G.GateAllocation).ToList(),
 			}).ToList();
 

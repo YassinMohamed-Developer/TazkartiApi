@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tazkarti.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Tazkarti.Infrastructure.Data;
 namespace Tazkarti.Infrastructure.Migrations
 {
     [DbContext(typeof(TazkartiDbContext))]
-    partial class TazkartiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260901010758_AddRoundToTicketPass")]
+    partial class AddRoundToTicketPass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -782,9 +785,6 @@ namespace Tazkarti.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsTransferred")
                         .HasColumnType("bit");
 
@@ -799,6 +799,14 @@ namespace Tazkarti.Infrastructure.Migrations
                     b.Property<string>("Round")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Row")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("SeatNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Status")
                         .IsRequired()

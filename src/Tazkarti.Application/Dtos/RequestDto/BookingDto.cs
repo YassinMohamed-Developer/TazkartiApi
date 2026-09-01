@@ -21,7 +21,7 @@ namespace Tazkarti.Application.Dtos.RequestDto
 
 		public int VenueId { get; set; }
 
-		public string City { get; set; }
+		public string City { get; set; } = null!;
 
 		public string? Gate { get; set; }
 
