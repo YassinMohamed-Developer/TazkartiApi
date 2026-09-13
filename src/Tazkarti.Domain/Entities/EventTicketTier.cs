@@ -6,7 +6,7 @@ public class EventTicketTier
     public int EventId { get; set; }
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public string? Perks { get; set; } // Stored as JSON string
+    public string? Perks { get; set; }
 
     public EntertainmentEvent Event { get; set; } = null!;
 }

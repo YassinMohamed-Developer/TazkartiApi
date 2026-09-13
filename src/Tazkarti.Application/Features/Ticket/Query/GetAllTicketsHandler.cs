@@ -1,61 +1,41 @@
-﻿using MediatR;
+using MediatR;
 using Shared.Helper;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using Tazkarti.Application.Dtos.RequestDto;
 using Tazkarti.Application.Interfaces;
 using Tazkarti.Domain.Entities;
 
-namespace Tazkarti.Application.Features.Ticket.Query
+namespace Tazkarti.Application.Features.Ticket.Query;
+
+public record GetAllTicketQuery(string? UserId) : IRequest<BaseResult<IReadOnlyList<TicketDto>>>;
+
+public class GetAllTicketsHandler(IUnitOfWork unitOfWork) : IRequestHandler<GetAllTicketQuery, BaseResult<IReadOnlyList<TicketDto>>>
 {
-	public record GetAllTicketQuery(string UserId) : IRequest<BaseResult<IReadOnlyList<TicketDto>>>;
-	public class GetAllTicketsHandler : IRequestHandler<GetAllTicketQuery, BaseResult<IReadOnlyList<TicketDto>>>
-	{
-		private readonly IUnitOfWork _unitOfWork;
+    public async Task<BaseResult<IReadOnlyList<TicketDto>>> Handle(GetAllTicketQuery request, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.UserId))
+            return new BaseResult<IReadOnlyList<TicketDto>> 
+            { IsSuccess = false,
+                StatusCode = 401,
+                Message = "A valid user is required." 
+            };
 
-		public GetAllTicketsHandler(IUnitOfWork unitOfWork)
-		{
-			_unitOfWork = unitOfWork;
-		}
-
-		public async Task<BaseResult<IReadOnlyList<TicketDto>>> Handle(GetAllTicketQuery request, CancellationToken cancellationToken)
-		{
-			var Tickets = await _unitOfWork.Repository<TicketPass>()
-				.GetAllWithIdAsync(x => x.BookingOrder.UserId == request.UserId,include:"BookingOrder");
-			if (Tickets == null)
-			{
-				return new BaseResult<IReadOnlyList<TicketDto>>
-				{
-					IsSuccess = false,
-					Message = "No Ticket Found",
-					StatusCode = (int)HttpStatusCode.NotFound,
-				};
-			}
-
-			var ticketDto = Tickets.Select(x => new TicketDto
-			{
-				BookingOrderId = x.BookingOrderId,
-				CurrentFanId = x.CurrentFanId,
-				Gate = x.Gate,
-				HolderName = x.HolderName,
-				Price = x.Price,
-				AwayTeam = x.AwayTeam,
-				Competition = x.Competition,
-				HomeTeam = x.HomeTeam,
-				Round = x.Round,
-				Title = x.Title,
-				Status = x.Status,
-				IsActive = x.IsActive,
-			}).ToList();
-
-			return new BaseResult<IReadOnlyList<TicketDto>>
-			{
-				IsSuccess = true,
-				Data = ticketDto,
-				Message = "Ticket retrieved successfully"
-			};
-		}
-	}
+        var tickets = await unitOfWork.Repository<TicketPass>().GetAllWithIdAsync(
+            x => x.BookingOrder.UserId == request.UserId, include: TicketResponseMapper.Includes);
+        var data = new List<TicketDto>();
+        foreach (var ticket in tickets)
+        {
+            if (!TicketResponseMapper.TryMap(ticket, out var dto))
+                return new BaseResult<IReadOnlyList<TicketDto>> 
+                { IsSuccess = false,
+                    StatusCode = 409,
+                    Message = $"Ticket {ticket.Id} has missing or inconsistent booking details." 
+                };
+            data.Add(dto!);
+        }
+        return new BaseResult<IReadOnlyList<TicketDto>> 
+        { Data = data,
+            StatusCode = 200,
+            Message = "Tickets retrieved successfully" 
+        };
+    }
 }

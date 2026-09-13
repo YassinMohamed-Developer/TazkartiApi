@@ -11,14 +11,14 @@ public class EntertainmentEvent
     public string? Artist { get; set; }
     public DateTime EventDate { get; set; }
     public string EventTime { get; set; } = string.Empty;
-    public int VenueId { get; set; }
+    public int? VenueId { get; set; }
     public string City { get; set; } = string.Empty;
     public decimal MinPrice { get; set; }
     public string? BannerImage { get; set; }
     public string? Description { get; set; }
     public bool IsActive { get; set; } = true;
 
-    public StadiumVenue Venue { get; set; } = null!;
+    public StadiumVenue? Venue { get; set; } = null!;
     public ICollection<EventTicketTier> TicketTiers { get; set; } = new List<EventTicketTier>();
     public ICollection<BookingOrder> Bookings { get; set; } = new List<BookingOrder>();
 }

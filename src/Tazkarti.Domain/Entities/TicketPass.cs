@@ -19,7 +19,7 @@ public class TicketPass
     public string? HomeTeam { get; set; }
     public string? AwayTeam { get; set; }
 
-    public bool? IsActive { get; set; } = true;
+	public bool? IsActive { get; set; } = true;
 	public BookingOrder BookingOrder { get; set; } = null!;
     public ICollection<TicketTransfer> Transfers { get; set; } = new List<TicketTransfer>();
 }

@@ -181,6 +181,15 @@ namespace Tazkarti.Application.Features.Booking.Command
 							AwayTeamName = x.AwayTeam.Name
 						});
 
+			var entertainmentEvent = await _unitOfWork.Repository<EntertainmentEvent>()
+					.FindAndProjectAsync(
+						x => x.Id == request.BookingDto.EventId,
+						x => new
+						{
+							x.Title,
+							x.IsActive
+						});
+
 			if (userid == null)
 			{
 				return new BaseResult<string>
@@ -205,9 +214,9 @@ namespace Tazkarti.Application.Features.Booking.Command
 					Competition = match?.Competition,
 					HomeTeam = match?.HomeTeamName,
 					AwayTeam = match?.AwayTeamName,
-					Title = match != null ? $"{match.HomeTeamName} vs {match.AwayTeamName}" : null,
+					Title = match != null ? $"{match.HomeTeamName} vs {match.AwayTeamName}" : null ?? entertainmentEvent?.Title,
 					Round = match?.Round,
-					IsActive = match?.IsActive,
+					IsActive = match?.IsActive ?? entertainmentEvent?.IsActive,
 				};
 
 				bookingOrder.Tickets.Add(ticketpass);

@@ -27,7 +27,7 @@ namespace Tazkarti.Api.Controllers
 			var result = await _mediator.Send(new GetAllTicketQuery(UserId));
 			if (!result.IsSuccess)
 			{
-				return BadRequest(result);
+				return StatusCode(result.StatusCode, result);
 			}
 
 			return Ok(result);
@@ -41,6 +41,22 @@ namespace Tazkarti.Api.Controllers
 			var result = await _mediator.Send(new GetTicketQuery(UserId, TicketPassId));
 			if (!result.IsSuccess)
 			{
+				return StatusCode(result.StatusCode, result);
+			}
+
+			return Ok(result);
+		}
+
+
+		//Need to Remove
+		[HttpGet("{TicketEventId}")]
+		public async Task<ActionResult> GetEntertainmentEventTicket(int TicketEventId)
+		{
+			var UserId = User.FindFirst("UserId")?.Value;
+
+			var result = await _mediator.Send(new GetEntertainmentEventTicketQuery(UserId, TicketEventId));
+			if (!result.IsSuccess)
+			{
 				return BadRequest(result);
 			}
 
@@ -52,7 +68,7 @@ namespace Tazkarti.Api.Controllers
 		{
 			var UserId = User.FindFirst("UserId")?.Value;
 
-			var result = await _mediator.Send(new VerifyTicketByQrCodeCommand(UserId, TicketPassId));
+			var result = await _mediator.Send(new VerifyTicketByQrCodeCommand(UserId!, TicketPassId));
 			if (!result.IsSuccess)
 			{
 				return BadRequest(result);

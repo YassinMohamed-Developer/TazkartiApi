@@ -94,7 +94,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 			}
 		}
 
-		return await _context.Set<T>().Where(predicate).ToListAsync();
+		return await query.Where(predicate).ToListAsync();
     }
 
 	public void Attache(T entity)

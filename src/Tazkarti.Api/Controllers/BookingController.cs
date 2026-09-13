@@ -24,7 +24,7 @@ namespace Tazkarti.Api.Controllers
 		{
 			var Userid = User.FindFirst("UserId")?.Value.ToString();
 
-			var result = await _mediator.Send(new BookingCommand(bookingDto,Userid));
+			var result = await _mediator.Send(new BookingCommand(bookingDto,Userid!));
 
 			if (!result.IsSuccess)
 			{
