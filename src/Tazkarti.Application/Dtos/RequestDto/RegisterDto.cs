@@ -10,6 +10,7 @@ namespace Tazkarti.Application.Dtos.RequestDto
 	{
 		[Required]
 		[StringLength(14, MinimumLength = 14, ErrorMessage = "National ID must be 14 digits.")]
+		[RegularExpression("^[0-9]{14}$", ErrorMessage = "National ID must be 14 digits.")]
 		public string NationalId { get; set; } = null!;
 
 		[Required]
@@ -22,6 +23,7 @@ namespace Tazkarti.Application.Dtos.RequestDto
 		public Gender Gender { get; set; }
 
 		[Required]
+		[RegularExpression(@"^01[0125]\d{8}$",ErrorMessage = "Please enter a valid Egyptian phone number.")]
 		public string PhoneNumber { get; set; } = null!;
 
 		[Required]
