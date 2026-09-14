@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.Google;
 using Shared.Helper;
 using System.Text;
 using Tazkarti.Application.Interfaces;
@@ -72,7 +74,17 @@ public static class DependencyInjection
 		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITokenService, TokenService>();
-		
+
+		var kernelBuilder = Kernel.CreateBuilder();
+		kernelBuilder.AddGoogleAIGeminiChatCompletion(
+			modelId:configuration["Gemini:modelid"]!,
+			apiKey: configuration["Gemini:ApiKey"]!,
+			apiVersion: GoogleAIVersion.V1_Beta
+);
+
+		var kernel = kernelBuilder.Build();
+
+		services.AddSingleton(kernel);
 
 		return services;
     }

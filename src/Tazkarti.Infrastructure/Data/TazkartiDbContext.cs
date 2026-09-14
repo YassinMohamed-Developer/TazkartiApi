@@ -25,7 +25,9 @@ public class TazkartiDbContext : IdentityDbContext<AppUser, IdentityRole, string
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
     public DbSet<AttendanceHistory> AttendanceHistories => Set<AttendanceHistory>();
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    public DbSet<ChatMessage> ChatBotMessages => Set<ChatMessage>();
+
+	protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
