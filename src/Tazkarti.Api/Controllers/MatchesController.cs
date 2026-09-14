@@ -28,5 +28,16 @@ namespace Tazkarti.Api.Controllers
 
 			return Ok(stadiums);
 		}
+
+		[HttpGet("{matchId}")]
+		public async Task<IActionResult> GetMatchById(int matchId)
+		{
+			var match = await _mediator.Send(new GetMatchByIdQuery(matchId));
+			if (!match.IsSuccess)
+			{
+				return BadRequest();
+			}
+			return Ok(match);
+		}
 	}
 }

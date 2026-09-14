@@ -23,7 +23,7 @@ namespace Tazkarti.Application.Features.Ticket.Command
 		{
 			var ticketPass = await _unitOfWork.Repository<TicketPass>()
 			.FindAndProjectAsync(x => x.BookingOrder.UserId == request.UserId
-			&& x.Id == request.TicketPassId, x => new
+			&& x.Id == request.TicketPassId, null, x => new
 			{
 				x.IsActive,
 				x.Id,

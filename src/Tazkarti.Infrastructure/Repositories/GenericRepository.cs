@@ -56,10 +56,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
 
     public virtual async Task<TResult?> FindAndProjectAsync<TResult>(
-        Expression<Func<T, bool>> predicate,
-        Expression<Func<T, TResult>> selector)
+        Expression<Func<T, bool>> predicate, string? include = null,
+		Expression<Func<T, TResult>>? selector = null)
     {
-        return await _context.Set<T>()
+
+		IQueryable<T> query = _context.Set<T>();
+
+		if (!string.IsNullOrEmpty(include))
+		{
+			foreach (var includeProp in include.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				query = query.Include(includeProp);
+			}
+		}
+		return await _context.Set<T>()
             .Where(predicate)
             .Select(selector)
             .FirstOrDefaultAsync();
@@ -106,5 +116,20 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 	{
          _context.Set<T>().Attach(entity);
         _context.Entry(entity).Property(propertyExpression).IsModified = true;
+	}
+
+	public async Task<IReadOnlyList<TResult>> GetAllWithProjectionAsync<TResult>(string? include = null, Expression<Func<T, TResult>>? selector = null)
+	{
+		IQueryable<T> query = _context.Set<T>();
+
+		if (!string.IsNullOrEmpty(include))
+		{
+			foreach (var includeProp in include.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+				query = query.Include(includeProp);
+			}
+		}
+
+        return await query.Select(selector!).ToListAsync();
 	}
 }

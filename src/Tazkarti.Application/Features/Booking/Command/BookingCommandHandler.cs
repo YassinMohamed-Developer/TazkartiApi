@@ -162,7 +162,7 @@ namespace Tazkarti.Application.Features.Booking.Command
 			bookingOrder.Status = BookingStatus.Confirmed;
 
 			var userid = await _unitOfWork.Repository<AppUser>()
-				.FindAndProjectAsync(x => x.Id == request.userId,x => new
+				.FindAndProjectAsync(x => x.Id == request.userId,null,x => new
 				{
 					x.FanId,
 					x.FullName
@@ -170,7 +170,7 @@ namespace Tazkarti.Application.Features.Booking.Command
 
 			var match = await _unitOfWork.Repository<FootballMatch>()
 					.FindAndProjectAsync(
-						x => x.Id == request.BookingDto.MatchId,
+						x => x.Id == request.BookingDto.MatchId,null,
 						x => new
 						{
 							x.Title,
@@ -184,6 +184,7 @@ namespace Tazkarti.Application.Features.Booking.Command
 			var entertainmentEvent = await _unitOfWork.Repository<EntertainmentEvent>()
 					.FindAndProjectAsync(
 						x => x.Id == request.BookingDto.EventId,
+						null,
 						x => new
 						{
 							x.Title,
