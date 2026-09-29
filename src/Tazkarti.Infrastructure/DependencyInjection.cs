@@ -9,8 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.Google;
 using Shared.Helper;
+using Shared.Helper.PdfGenerator;
 using System.Text;
 using Tazkarti.Application.Interfaces;
+using Tazkarti.Application.RabbitMQ;
+using Tazkarti.Application.RabbitMQ.Consumers;
 using Tazkarti.Domain.Entities;
 using Tazkarti.Domain.Interfaces;
 using Tazkarti.Infrastructure.Data;
@@ -74,6 +77,10 @@ public static class DependencyInjection
 		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<ITokenService, TokenService>();
+		services.AddHostedService<TazkaraPdfConsumer>();
+		services.AddScoped<ITazkaraPdf, TazkaraPdf>();
+		services.AddScoped<ITazkaraPdfProducer, TazkaraPdfProducer>();
+
 
 		var kernelBuilder = Kernel.CreateBuilder();
 		kernelBuilder.AddGoogleAIGeminiChatCompletion(

@@ -1,12 +1,14 @@
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Shared.Helper;
+using Shared.Helper.PdfGenerator;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using Shared.Helper;
 using Tazkarti.Application.Dtos.RequestDto;
 using Tazkarti.Application.Interfaces;
+using Tazkarti.Application.RabbitMQ;
 using Tazkarti.Domain.Entities;
 using Tazkarti.Domain.Enums;
 
@@ -18,11 +20,14 @@ namespace Tazkarti.Application.Features.Booking.Command
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ILogger<BookingCommandHandler> _logger;
+		private readonly ITazkaraPdfProducer _tazkaraPdfProducer;
 
-		public BookingCommandHandler(IUnitOfWork unitOfWork, ILogger<BookingCommandHandler> logger)
+		public BookingCommandHandler(IUnitOfWork unitOfWork, 
+			ILogger<BookingCommandHandler> logger, ITazkaraPdfProducer tazkaraPdfProducer)
 		{
 			_unitOfWork = unitOfWork;
 			_logger = logger;
+			_tazkaraPdfProducer = tazkaraPdfProducer;
 		}
 
 		public async Task<BaseResult<string>> Handle(BookingCommand request, CancellationToken cancellationToken)
@@ -224,6 +229,20 @@ namespace Tazkarti.Application.Features.Booking.Command
 			}
 
 			await _unitOfWork.SaveChangesAsync();
+			await _tazkaraPdfProducer.PublishTazkaraAsync(new MatchTazkaraDto
+			{
+				BookingReference = bookingOrder.BookingReference,
+				FanId = userid.FanId,
+				HolderName = userid.FullName,
+				Price = bookingOrder.TotalAmount,
+				AwayTeamName = match?.AwayTeamName,
+				HomeTeamName = match?.HomeTeamName,
+				CompetitionName = match?.Competition,
+				Round = match?.Round,
+				Title = match != null ? $"{match.HomeTeamName} vs {match.AwayTeamName}" : null,
+				Gate = bookingOrder.Gate,
+				IsActive = match?.IsActive
+			});
 
 			_logger.LogInformation("Booking order {Reference} created for user {UserId}", bookingOrder.BookingReference, request.userId);
 
