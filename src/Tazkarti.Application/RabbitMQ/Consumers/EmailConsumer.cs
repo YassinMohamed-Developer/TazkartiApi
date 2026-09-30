@@ -3,21 +3,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Shared.Helper.PdfGenerator;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Tazkarti.Application.Dtos.RequestDto;
 using Tazkarti.Application.Email;
 
 namespace Tazkarti.Application.RabbitMQ.Consumers
 {
-	public class TazkaraPdfConsumer : BackgroundService
+	public class EmailConsumer : BackgroundService
 	{
 		private readonly IConfiguration _configuration;
 		private readonly IServiceScopeFactory _serviceScopeFactory;
 
-		public TazkaraPdfConsumer(IConfiguration configuration,
+		public EmailConsumer(IConfiguration configuration,
 			IServiceScopeFactory serviceScopeFactory)
 		{
 			_configuration = configuration;
@@ -36,7 +37,7 @@ namespace Tazkarti.Application.RabbitMQ.Consumers
 			using var channel = await connection.CreateChannelAsync();
 
 			await channel.QueueDeclareAsync(
-				queue: "TazkaraQueue",
+				queue: "EmailQueue",
 				durable: true,
 				autoDelete: false,
 				exclusive: false
@@ -50,42 +51,37 @@ namespace Tazkarti.Application.RabbitMQ.Consumers
 
 				var json = Encoding.UTF8.GetString(body);
 
-				var message = JsonSerializer.Deserialize<MatchTazkaraDto>(json);
+				var message = JsonSerializer.Deserialize<EmailEvent>(json);
 
-				using var scope = _serviceScopeFactory.CreateScope();
-
-				var pdfservice = scope.ServiceProvider.GetRequiredService<ITazkaraPdf>();
-
-				var pdfBytes = pdfservice.GeneratePdf(message!);
-
-				Directory.CreateDirectory("Tickets");
-
-				var filePath =
-					Path.Combine(
-						"Tickets",
-						$"Ticket-{message!.BookingReference}.pdf");
-
-				await File.WriteAllBytesAsync(filePath, pdfBytes);
-
-				var emailPublisher = scope.ServiceProvider.GetRequiredService<IRabbitMQProducer>();
-				await emailPublisher.PublishEmailAsync(new EmailEvent
+				if (message != null)
 				{
-					To = message!.Email,
-					TazkaraPdfPath = filePath
-				});
+					using var scope = _serviceScopeFactory.CreateScope();
+
+					var emailService = scope.ServiceProvider.GetRequiredService<IEmail>();
+
+					var emailDto = new EmailDto
+					{
+						To = message.To ?? string.Empty,
+						Subject = message.Subject ?? "Your Tazkarti Ticket",
+						Body = message.Body ?? "<h3>Thank you for booking with Tazkarti!</h3><p>Please find your ticket attached.</p>",
+						AttachmentPath = message.TazkaraPdfPath
+					};
+
+					await emailService.SendEmail(emailDto);
+				}
 
 				await channel.BasicAckAsync(arg.DeliveryTag, false);
 			};
 
 			await channel.BasicConsumeAsync(
-				queue: "TazkaraQueue",
+				queue: "EmailQueue",
 				autoAck: false,
 				consumer: consumer
-				);
+			);
 
 			await Task.Delay(
-			Timeout.InfiniteTimeSpan,
-			stoppingToken);
+				Timeout.InfiniteTimeSpan,
+				stoppingToken);
 		}
 	}
 }

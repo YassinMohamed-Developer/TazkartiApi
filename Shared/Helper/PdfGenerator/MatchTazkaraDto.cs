@@ -22,6 +22,8 @@
 
 		public string? Title { get; set; }
 
+		public string? Email { get; set; }
+
 		//public string? QrCodeImageBase64 { get; set; }
 	}
 }

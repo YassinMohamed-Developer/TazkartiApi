@@ -20,14 +20,14 @@ namespace Tazkarti.Application.Features.Booking.Command
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ILogger<BookingCommandHandler> _logger;
-		private readonly ITazkaraPdfProducer _tazkaraPdfProducer;
+		private readonly IRabbitMQProducer _rabbitMQProducer;
 
 		public BookingCommandHandler(IUnitOfWork unitOfWork, 
-			ILogger<BookingCommandHandler> logger, ITazkaraPdfProducer tazkaraPdfProducer)
+			ILogger<BookingCommandHandler> logger, IRabbitMQProducer rabbitMQProducer)
 		{
 			_unitOfWork = unitOfWork;
 			_logger = logger;
-			_tazkaraPdfProducer = tazkaraPdfProducer;
+			_rabbitMQProducer = rabbitMQProducer;
 		}
 
 		public async Task<BaseResult<string>> Handle(BookingCommand request, CancellationToken cancellationToken)
@@ -170,7 +170,8 @@ namespace Tazkarti.Application.Features.Booking.Command
 				.FindAndProjectAsync(x => x.Id == request.userId,null,x => new
 				{
 					x.FanId,
-					x.FullName
+					x.FullName,
+					x.Email
 				});
 
 			var match = await _unitOfWork.Repository<FootballMatch>()
@@ -229,7 +230,7 @@ namespace Tazkarti.Application.Features.Booking.Command
 			}
 
 			await _unitOfWork.SaveChangesAsync();
-			await _tazkaraPdfProducer.PublishTazkaraAsync(new MatchTazkaraDto
+			await _rabbitMQProducer.PublishTazkaraAsync(new MatchTazkaraDto
 			{
 				BookingReference = bookingOrder.BookingReference,
 				FanId = userid.FanId,
@@ -241,7 +242,8 @@ namespace Tazkarti.Application.Features.Booking.Command
 				Round = match?.Round,
 				Title = match != null ? $"{match.HomeTeamName} vs {match.AwayTeamName}" : null,
 				Gate = bookingOrder.Gate,
-				IsActive = match?.IsActive
+				IsActive = match?.IsActive,
+				Email = userid.Email
 			});
 
 			_logger.LogInformation("Booking order {Reference} created for user {UserId}", bookingOrder.BookingReference, request.userId);

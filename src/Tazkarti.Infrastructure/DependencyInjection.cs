@@ -11,6 +11,7 @@ using Microsoft.SemanticKernel.Connectors.Google;
 using Shared.Helper;
 using Shared.Helper.PdfGenerator;
 using System.Text;
+using Tazkarti.Application.Email;
 using Tazkarti.Application.Interfaces;
 using Tazkarti.Application.RabbitMQ;
 using Tazkarti.Application.RabbitMQ.Consumers;
@@ -55,6 +56,7 @@ public static class DependencyInjection
 	    });
 
 		services.Configure<TokenOptions>(configuration.GetSection("Token"));
+		services.Configure<MailSettingsOptions>(configuration.GetSection("MailSettings"));
 
 		services.Configure<ApiBehaviorOptions>(option =>
 		{
@@ -75,16 +77,18 @@ public static class DependencyInjection
 		});
 
 		services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddScoped<ITokenService, TokenService>();
+		services.AddScoped<IUnitOfWork, UnitOfWork>();
+		services.AddScoped<ITokenService, TokenService>();
 		services.AddHostedService<TazkaraPdfConsumer>();
+		services.AddHostedService<EmailConsumer>();
 		services.AddScoped<ITazkaraPdf, TazkaraPdf>();
-		services.AddScoped<ITazkaraPdfProducer, TazkaraPdfProducer>();
+		services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
+		services.AddScoped<IEmail, Email>();
 
 
 		var kernelBuilder = Kernel.CreateBuilder();
 		kernelBuilder.AddGoogleAIGeminiChatCompletion(
-			modelId:configuration["Gemini:modelid"]!,
+			modelId: configuration["Gemini:modelid"]!,
 			apiKey: configuration["Gemini:ApiKey"]!,
 			apiVersion: GoogleAIVersion.V1_Beta
 );
@@ -94,5 +98,5 @@ public static class DependencyInjection
 		services.AddSingleton(kernel);
 
 		return services;
-    }
+	}
 }
