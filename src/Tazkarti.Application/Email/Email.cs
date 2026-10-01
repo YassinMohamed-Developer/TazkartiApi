@@ -3,9 +3,6 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Shared.Helper;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Tazkarti.Application.Dtos.RequestDto;
 
 namespace Tazkarti.Application.Email
