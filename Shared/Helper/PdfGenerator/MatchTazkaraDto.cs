@@ -2,6 +2,7 @@
 {
 	public record MatchTazkaraDto
 	{
+		public int? BookingOrderId { get; set; }
 		public string? BookingReference { get; set; }
 		public string? HomeTeamName { get; set; }
 

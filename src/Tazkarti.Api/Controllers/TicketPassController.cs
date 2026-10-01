@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Google.GenAI.Types;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +60,17 @@ namespace Tazkarti.Api.Controllers
 			}
 
 			return Ok(result);
+		}
+		[HttpGet("{TicketId}")]
+		public async Task<ActionResult> PrintTazkaraPdf(int TicketId)
+		{
+			var result = await _mediator.Send(new GenerateTicketPdfQuery(TicketId));
+			if (result == null)
+			{
+				return NotFound();
+			}
+
+			return File(result.Data, "application/pdf", $"Tazkara_{TicketId}.pdf");
 		}
 	}
 }
