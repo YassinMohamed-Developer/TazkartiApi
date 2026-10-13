@@ -24,6 +24,8 @@ public class TazkartiDbContext : IdentityDbContext<AppUser, IdentityRole, string
     public DbSet<TicketTransfer> TicketTransfers => Set<TicketTransfer>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
     public DbSet<AttendanceHistory> AttendanceHistories => Set<AttendanceHistory>();
+    public DbSet<Session> Sessions => Set<Session>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<ChatMessage> ChatBotMessages => Set<ChatMessage>();
 

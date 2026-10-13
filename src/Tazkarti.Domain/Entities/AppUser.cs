@@ -23,4 +23,5 @@ public class AppUser : IdentityUser<string>
 	public ICollection<BookingOrder> Bookings { get; set; } = new List<BookingOrder>();
     public ICollection<AttendanceHistory> AttendanceHistories { get; set; } = new List<AttendanceHistory>();
     public ICollection<PaymentTransaction> PaymentTransactions { get; set; } = new List<PaymentTransaction>();
+    public ICollection<Session> Sessions { get; set; } = new List<Session>();
 }
